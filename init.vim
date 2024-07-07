@@ -3,6 +3,7 @@ Plug 'morhetz/gruvbox'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'andweeb/presence.nvim'
 Plug 'junegunn/fzf.vim'
 Plug 'dense-analysis/ale'
 Plug 'jiangmiao/auto-pairs'
@@ -31,7 +32,7 @@ nnoremap <leader>sv :source ~/.config/nvim/init.vim<cr>
 
 vnoremap <leader>c "+y
 nnoremap <leader>v "+p
-
+vnoremap <leader>d "+d
 lua << EOF
 require('oil').setup()
 EOF
