@@ -1,4 +1,21 @@
 {
   "suggest.autoTrigger": "always",
-  "suggest.enableCompletion": true
+  "languageserver": {
+    "rust": {
+      "command": "rust-analyzer",
+      "filetypes": ["rust"],
+      "rootPatterns": ["Cargo.toml"],
+      "initializationOptions": {},
+      "settings": {
+        "rust-analyzer": {
+          "cargo": {
+            "loadOutDirsFromCheck": true
+          },
+          "procMacro": {
+            "enable": true
+          }
+        }
+      }
+    }
+}
 }
