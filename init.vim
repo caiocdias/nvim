@@ -26,9 +26,6 @@ vnoremap <leader>c "+y
 nnoremap <leader>v "+p
 vnoremap <leader>d "+d
 
-" Lua integration for file explorer
-lua require('oil').setup()
-
 nnoremap <C-e> :Oil<CR>
 let g:loaded_perl_provider = 0
 
@@ -43,15 +40,16 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" Configure language servers for Rust and Java
+" Configure language servers
 let g:coc_global_extensions = [
     \ 'coc-json', 
     \ 'coc-rust-analyzer', 
     \ 'coc-java', 
     \ 'coc-tsserver', 
-    \ 'coc-pairs'
+    \ 'coc-pairs',
+    \ 'coc-python',     
+    \ 'coc-clangd'     
 \]
-
 " Diagnostic key mappings
 nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
 nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -59,3 +57,11 @@ nnoremap <silent> gd <Plug>(coc-definition)
 nnoremap <silent> gy <Plug>(coc-type-definition)
 nnoremap <silent> gi <Plug>(coc-implementation)
 nnoremap <silent> gr <Plug>(coc-references)
+
+lua << EOF
+require('oil').setup({
+  list = {
+    hide_pattern = nil  -- Mostra arquivos ocultos
+  }
+})
+EOF
