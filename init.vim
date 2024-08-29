@@ -5,8 +5,11 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'andweeb/presence.nvim'
 Plug 'junegunn/fzf.vim'
-Plug 'stevearc/oil.nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Remova ou comente a linha abaixo
+" Plug 'stevearc/oil.nvim'
+" Adicione esta linha para nvim-tree.lua
+Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
 
 colorscheme gruvbox
@@ -26,7 +29,9 @@ vnoremap <leader>c "+y
 nnoremap <leader>v "+p
 vnoremap <leader>d "+d
 
-nnoremap <C-e> :Oil<CR>
+" Substituir Oil com Nvim Tree
+nnoremap <leader>e :NvimTreeFocus<CR>
+nnoremap <C-e> :NvimTreeToggle<CR>
 let g:loaded_perl_provider = 0
 
 " Improve autocomplete experience
@@ -48,8 +53,9 @@ let g:coc_global_extensions = [
     \ 'coc-tsserver', 
     \ 'coc-pairs',
     \ 'coc-python',     
-    \ 'coc-clangd'     
-\]
+    \ 'coc-clangd'
+\ ]
+
 " Diagnostic key mappings
 nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
 nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -58,10 +64,8 @@ nnoremap <silent> gy <Plug>(coc-type-definition)
 nnoremap <silent> gi <Plug>(coc-implementation)
 nnoremap <silent> gr <Plug>(coc-references)
 
+" Configuração básica do nvim-tree
 lua << EOF
-require('oil').setup({
-  list = {
-    hide_pattern = nil  -- Mostra arquivos ocultos
-  }
-})
+require('nvim-tree').setup {}
 EOF
+
