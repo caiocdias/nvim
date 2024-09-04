@@ -6,9 +6,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'andweeb/presence.nvim'
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Remova ou comente a linha abaixo
-" Plug 'stevearc/oil.nvim'
-" Adicione esta linha para nvim-tree.lua
 Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
 
@@ -34,7 +31,6 @@ nnoremap <leader>e :NvimTreeFocus<CR>
 nnoremap <C-e> :NvimTreeToggle<CR>
 let g:loaded_perl_provider = 0
 
-" Improve autocomplete experience
 function! s:check_backspace() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1]  =~# '\s'
