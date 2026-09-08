@@ -117,41 +117,98 @@ e execute `:MasonInstall clang-format`.
 
 ## 4. Atalhos principais
 
-`<leader>` é `Space`.
+`<leader>` é `Space` (barra de espaço). Em `Space ff`, pressione `Space`,
+depois `f` e depois `f`, em sequência; não digite a palavra "Space".
+Em `Ctrl+h`, mantenha `Ctrl` pressionado enquanto aperta `h`.
 
-| Atalho | Ação |
-|---|---|
-| `Space e` | abrir/fechar explorador de arquivos |
-| `Space ff` | procurar arquivo |
-| `Space fg` | procurar texto no projeto |
-| `Space fb` | procurar buffer aberto |
-| `gd` | ir para definição |
-| `gD` | ir para declaração |
-| `gr` | listar referências |
-| `gi` | ir para implementação |
-| `K` | documentação/hover |
-| `Space rn` | renomear símbolo |
-| `Space ca` | code action |
-| `[d` / `]d` | diagnóstico anterior/próximo |
-| `Space f` | formatar arquivo/seleção |
-| `Space cb` | compilar arquivo C atual |
-| `Space cr` | executar último `.exe` compilado |
-| `Space cx` | compilar e executar |
-| `F5` | iniciar/continuar debugger |
-| `F10` | step over |
-| `F11` | step into |
-| `F12` | step out |
-| `Space db` | breakpoint |
-| `Space du` | abrir/fechar UI do debugger |
-| `Space tt` | terminal horizontal |
-| `Esc Esc` | sair do modo terminal |
+- **Normal:** pressione `Esc` para sair da inserção ou da seleção. Os atalhos
+  desse modo são executados diretamente, sem `:` e sem `Enter`.
+- **Inserção:** pressione `i` no modo Normal para escrever no arquivo.
+- **Visual:** pressione `v` no modo Normal e selecione o texto com o cursor.
+- **Terminal:** as teclas são enviadas ao terminal aberto dentro do Neovim.
+  Use `Esc Esc` para voltar ao modo Normal desse buffer.
+- **Linha de comando:** no modo Normal, pressione `:`, digite o comando e
+  pressione `Enter`. Os dois-pontos aparecem uma única vez, no início da linha.
 
-No autocomplete:
+Exemplo para salvar tudo: `Esc` → digite `:wall` → `Enter`.
+Digite um comando por vez, na linha inferior do Neovim. Se o texto aparece
+dentro do arquivo, você está no modo de inserção. `:wall` pode não mostrar
+mensagem quando não há alterações para salvar.
 
-- `Tab`: próxima sugestão.
-- `Shift+Tab`: sugestão anterior.
-- `Enter`: aceitar.
-- `Ctrl+Space`: pedir sugestões ao LSP manualmente.
+### Atalhos de teclado
+
+A coluna **Tipo** distingue atalhos de comandos digitados com `:`.
+
+| Entrada | Tipo | Modo necessário | Ação |
+|---|---|---|---|
+| `Space w` | Atalho | Normal | Salvar arquivo atual (equivale a `:write`) |
+| `Space q` | Atalho | Normal | Fechar janela atual (equivale a `:quit`) |
+| `Esc` | Atalho | Normal | Limpar destaque da busca |
+| `Space e` | Atalho | Normal | Abrir/fechar explorador de arquivos |
+| `Ctrl+h` / `Ctrl+j` / `Ctrl+k` / `Ctrl+l` | Atalho | Normal | Ir à janela à esquerda / abaixo / acima / à direita |
+| `Space ff` | Atalho | Normal | Procurar arquivo |
+| `Space fg` | Atalho | Normal | Procurar texto no projeto (requer `ripgrep`) |
+| `Space fb` | Atalho | Normal | Procurar buffer aberto |
+| `Space fr` | Atalho | Normal | Procurar arquivo recente |
+| `Space fh` | Atalho | Normal | Procurar na ajuda |
+| `gd` | Atalho | Normal, com LSP conectado | Ir para definição |
+| `gD` | Atalho | Normal, com LSP conectado | Ir para declaração |
+| `gr` | Atalho | Normal, com LSP conectado | Listar referências |
+| `gi` | Atalho | Normal, com LSP conectado | Ir para implementação |
+| `K` | Atalho | Normal, com LSP conectado | Documentação do símbolo sob o cursor |
+| `Space rn` | Atalho | Normal, com LSP conectado | Renomear símbolo |
+| `Space ca` | Atalho | Normal, com LSP conectado | Mostrar ações de código |
+| `Space ds` | Atalho | Normal, com LSP conectado | Listar símbolos do arquivo |
+| `[d` / `]d` | Atalho | Normal | Diagnóstico anterior / próximo |
+| `Space dd` | Atalho | Normal | Detalhar diagnóstico em janela flutuante |
+| `Space dl` | Atalho | Normal | Abrir lista de diagnósticos |
+| `Space f` | Atalho | Normal ou Visual | Formatar arquivo ou seleção, respectivamente |
+| `Space cb` | Atalho | Normal | Compilar arquivo C atual (equivale a `:CBuild`) |
+| `Space cr` | Atalho | Normal | Executar último `.exe` compilado (equivale a `:CRun`) |
+| `Space cx` | Atalho | Normal | Compilar e executar (equivale a `:CBuildRun`) |
+| `F5` | Atalho | Normal | Iniciar/continuar debugger |
+| `F10` | Atalho | Normal | Executar próxima linha sem entrar na função (step over) |
+| `F11` | Atalho | Normal | Entrar na função (step into) |
+| `F12` | Atalho | Normal | Executar até sair da função (step out) |
+| `Space db` | Atalho | Normal | Adicionar/remover breakpoint |
+| `Space dc` | Atalho | Normal | Remover todos os breakpoints |
+| `Space du` | Atalho | Normal | Abrir/fechar interface do debugger |
+| `Space dr` | Atalho | Normal | Abrir console do debugger (REPL) |
+| `Space tt` | Atalho | Normal | Abrir terminal horizontal e entrar no modo Terminal |
+| `Esc Esc` | Atalho | Terminal | Voltar ao modo Normal sem encerrar o processo do terminal |
+| `Tab` | Atalho | Inserção, com menu de sugestões aberto | Selecionar próxima sugestão |
+| `Shift+Tab` | Atalho | Inserção, com menu de sugestões aberto | Selecionar sugestão anterior |
+| `Enter` | Atalho | Inserção, com menu de sugestões aberto | Aceitar sugestão |
+| `Ctrl+Space` | Atalho | Inserção, com LSP conectado | Pedir sugestões ao LSP |
+
+Sem o menu de sugestões, `Enter` insere uma nova linha e `Tab` faz a indentação.
+Na linha de comando, `Enter` executa o comando digitado.
+
+### Comandos para digitar
+
+Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
+(incluindo `:`) e pressione `Enter`.
+
+| Entrada | Tipo | Modo necessário | Ação |
+|---|---|---|---|
+| `:write` ou `:w` | Comando | Linha de comando, a partir do Normal | Salvar arquivo atual (`Space w`) |
+| `:wall` | Comando | Linha de comando, a partir do Normal | Salvar todos os buffers alterados |
+| `:quit` ou `:q` | Comando | Linha de comando, a partir do Normal | Fechar janela atual (`Space q`); pode pedir para salvar |
+| `:restart` | Comando | Linha de comando, a partir do Normal | Reiniciar o Neovim e recarregar a configuração; salve antes com `:wall` |
+| `:lua vim.pack.update()` | Comando | Linha de comando, a partir do Normal | Buscar atualizações dos plugins e abrir a revisão |
+| `:Neotree toggle reveal` | Comando | Linha de comando, a partir do Normal | Abrir/fechar explorador e revelar arquivo atual (`Space e`) |
+| `:Telescope find_files` | Comando | Linha de comando, a partir do Normal | Procurar arquivo (`Space ff`) |
+| `:Telescope live_grep` | Comando | Linha de comando, a partir do Normal | Procurar texto no projeto (`Space fg`); requer `ripgrep` |
+| `:Telescope buffers` | Comando | Linha de comando, a partir do Normal | Procurar buffer aberto (`Space fb`) |
+| `:CBuild` | Comando | Linha de comando, a partir do Normal | Compilar arquivo C atual (`Space cb`) |
+| `:CRun` | Comando | Linha de comando, a partir do Normal | Executar último `.exe` compilado (`Space cr`) |
+| `:CBuildRun` | Comando | Linha de comando, a partir do Normal | Compilar e executar (`Space cx`) |
+| `:Mason` | Comando | Linha de comando, a partir do Normal | Abrir gerenciador de ferramentas |
+| `:MasonLog` | Comando | Linha de comando, a partir do Normal | Consultar log de instalação das ferramentas |
+| `:ConformInfo` | Comando | Linha de comando, a partir do Normal | Verificar formatadores disponíveis e erros de formatação |
+| `:echo exepath('clang-format')` | Comando | Linha de comando, a partir do Normal | Mostrar o caminho do `clang-format` encontrado |
+| `:checkhealth vim.lsp` | Comando | Linha de comando, a partir do Normal | Verificar configuração do LSP |
+| `:checkhealth` | Comando | Linha de comando, a partir do Normal | Verificar a instalação e os plugins |
 
 ## 5. Build em C
 
@@ -200,15 +257,27 @@ Sem Treesitter, C continua com:
 
 Depois de preparar o toolchain do Treesitter, os parsers podem ser instalados conforme a documentação atual do plugin.
 
-## 8. Atualizar plugins
+## 8. Recarregar a configuração e atualizar plugins
+
+Para carregar as alterações da configuração, execute um comando por vez:
+
+```vim
+:wall
+:restart
+```
+
+O primeiro salva os arquivos; o segundo reinicia o Neovim e carrega a configuração
+novamente. Apenas `:source $MYVIMRC` não recarrega todos os módulos Lua já
+carregados por `require()`.
 
 O Neovim 0.12 possui `vim.pack` nativo. Para atualizar:
 
 ```vim
-:packupdate
+:lua vim.pack.update()
 ```
 
-Revise a tela de mudanças e grave com `:write` para confirmar.
+Revise a tela de mudanças e grave com `:write` para confirmar. Depois, execute
+`:restart` para carregar os plugins atualizados.
 
 ## 9. Estilo de formatação
 
