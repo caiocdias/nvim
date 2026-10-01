@@ -1,3 +1,13 @@
+-- Os ftplugins nativos também ativam Treesitter (Lua, Markdown e ajuda).
+-- Este autocmd roda depois deles e remove o realce de qualquer tipo de arquivo.
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(ev)
+    vim.treesitter.stop(ev.buf)
+    -- O highlighter nativo pode reativar a sintaxe ao iniciar ou parar.
+    vim.cmd("syntax off")
+  end,
+})
+
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.hl.on_yank({ timeout = 150 })

@@ -13,11 +13,8 @@ vim.pack.add({
   { src = gh("MunifTanjim/nui.nvim") },
   { src = gh("nvim-neo-tree/neo-tree.nvim"), version = "v3.x" },
   { src = gh("nvim-telescope/telescope.nvim") },
-  { src = gh("neovim/nvim-lspconfig") },
   { src = gh("mason-org/mason.nvim") },
-  { src = gh("mason-org/mason-lspconfig.nvim") },
   { src = gh("WhoIsSethDaniel/mason-tool-installer.nvim") },
-  { src = gh("nvim-treesitter/nvim-treesitter") },
   { src = gh("stevearc/conform.nvim") },
   { src = gh("lewis6991/gitsigns.nvim") },
   { src = gh("nvim-lualine/lualine.nvim") },
@@ -34,10 +31,6 @@ vim.pack.add({
 require("tokyonight").setup({
   style = "night",
   transparent = false,
-  styles = {
-    comments = { italic = true },
-    keywords = { italic = false },
-  },
 })
 vim.cmd.colorscheme("tokyonight")
 
@@ -45,7 +38,7 @@ require("neo-tree").setup({
   close_if_last_window = true,
   popup_border_style = "rounded",
   enable_git_status = true,
-  enable_diagnostics = true,
+  enable_diagnostics = false,
   filesystem = {
     follow_current_file = { enabled = true },
     use_libuv_file_watcher = true,
@@ -83,6 +76,9 @@ require("nvim-autopairs").setup({})
 require("which-key").setup({})
 
 require("lualine").setup({
+  sections = {
+    lualine_b = { "branch", "diff" },
+  },
   options = {
     theme = "auto",
     globalstatus = true,
@@ -105,6 +101,6 @@ require("conform").setup({
   },
   format_on_save = {
     timeout_ms = 1500,
-    lsp_format = "fallback",
+    lsp_format = "never",
   },
 })

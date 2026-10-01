@@ -23,7 +23,7 @@ opt.swapfile = false
 opt.inccommand = "split"
 opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
 opt.autocomplete = true
-opt.complete = { ".", "w", "b", "u", "o" }
+opt.complete = { ".", "w", "b", "u" }
 
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -31,18 +31,4 @@ opt.softtabstop = 4
 opt.expandtab = true
 opt.smartindent = true
 
-vim.cmd("syntax enable")
-
-vim.diagnostic.config({
-  severity_sort = true,
-  underline = true,
-  update_in_insert = false,
-  virtual_text = {
-    spacing = 2,
-    source = "if_many",
-  },
-  float = {
-    border = "rounded",
-    source = true,
-  },
-})
+vim.cmd("syntax off")

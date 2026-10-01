@@ -4,16 +4,14 @@ Configuração voltada ao **Neovim 0.12+** no Windows.
 
 ## O que está incluído
 
-- LSP de C/C++ com `clangd`.
-- Autocomplete nativo do Neovim 0.12, alimentado pelo LSP.
-- Diagnósticos, hover, rename, code actions e navegação por definição/referências.
+- Edição sem LSP e sem realce de sintaxe.
+- Autocomplete nativo com palavras dos buffers, sem servidor de linguagem.
 - Explorador de arquivos com Neo-tree.
 - Busca de arquivos/texto com Telescope.
 - `clang-format` com formatação ao salvar e estilo LLVM ajustado para 4 espaços.
 - Git signs.
 - Debug com `nvim-dap` + `codelldb`.
 - Build e execução de arquivo C diretamente no Neovim.
-- Treesitter preparado, mas sem parser instalado automaticamente.
 - Tema Tokyo Night, statusline, autopairs e WhichKey.
 
 ## 1. Onde colocar a pasta
@@ -54,7 +52,7 @@ winget install --id BurntSushi.ripgrep.MSVC -e
 
 ### Obrigatório para compilar C: LLVM/Clang ou GCC
 
-O `clangd` instalado pelo Mason é o servidor de linguagem. Para gerar `.exe`, ainda é necessário um compilador real.
+Para gerar `.exe`, é necessário um compilador C, como Clang ou GCC.
 
 LLVM/Clang no Windows:
 
@@ -84,7 +82,6 @@ nvim
 
 Na primeira execução, `vim.pack` baixa os plugins. Em seguida, Mason instala automaticamente:
 
-- `clangd`
 - `clang-format`, somente se não houver um executável disponível no `PATH` do Neovim
 - `codelldb`
 
@@ -92,7 +89,6 @@ Use os comandos abaixo para conferir:
 
 ```vim
 :Mason
-:checkhealth vim.lsp
 :checkhealth
 ```
 
@@ -151,17 +147,6 @@ A coluna **Tipo** distingue atalhos de comandos digitados com `:`.
 | `Space fb` | Atalho | Normal | Procurar buffer aberto |
 | `Space fr` | Atalho | Normal | Procurar arquivo recente |
 | `Space fh` | Atalho | Normal | Procurar na ajuda |
-| `gd` | Atalho | Normal, com LSP conectado | Ir para definição |
-| `gD` | Atalho | Normal, com LSP conectado | Ir para declaração |
-| `gr` | Atalho | Normal, com LSP conectado | Listar referências |
-| `gi` | Atalho | Normal, com LSP conectado | Ir para implementação |
-| `K` | Atalho | Normal, com LSP conectado | Documentação do símbolo sob o cursor |
-| `Space rn` | Atalho | Normal, com LSP conectado | Renomear símbolo |
-| `Space ca` | Atalho | Normal, com LSP conectado | Mostrar ações de código |
-| `Space ds` | Atalho | Normal, com LSP conectado | Listar símbolos do arquivo |
-| `[d` / `]d` | Atalho | Normal | Diagnóstico anterior / próximo |
-| `Space dd` | Atalho | Normal | Detalhar diagnóstico em janela flutuante |
-| `Space dl` | Atalho | Normal | Abrir lista de diagnósticos |
 | `Space f` | Atalho | Normal ou Visual | Formatar arquivo ou seleção, respectivamente |
 | `Space cb` | Atalho | Normal | Compilar arquivo C atual (equivale a `:CBuild`) |
 | `Space cr` | Atalho | Normal | Executar último `.exe` compilado (equivale a `:CRun`) |
@@ -179,7 +164,6 @@ A coluna **Tipo** distingue atalhos de comandos digitados com `:`.
 | `Tab` | Atalho | Inserção, com menu de sugestões aberto | Selecionar próxima sugestão |
 | `Shift+Tab` | Atalho | Inserção, com menu de sugestões aberto | Selecionar sugestão anterior |
 | `Enter` | Atalho | Inserção, com menu de sugestões aberto | Aceitar sugestão |
-| `Ctrl+Space` | Atalho | Inserção, com LSP conectado | Pedir sugestões ao LSP |
 
 Sem o menu de sugestões, `Enter` insere uma nova linha e `Tab` faz a indentação.
 Na linha de comando, `Enter` executa o comando digitado.
@@ -207,7 +191,6 @@ Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
 | `:MasonLog` | Comando | Linha de comando, a partir do Normal | Consultar log de instalação das ferramentas |
 | `:ConformInfo` | Comando | Linha de comando, a partir do Normal | Verificar formatadores disponíveis e erros de formatação |
 | `:echo exepath('clang-format')` | Comando | Linha de comando, a partir do Normal | Mostrar o caminho do `clang-format` encontrado |
-| `:checkhealth vim.lsp` | Comando | Linha de comando, a partir do Normal | Verificar configuração do LSP |
 | `:checkhealth` | Comando | Linha de comando, a partir do Normal | Verificar a instalação e os plugins |
 
 ## 5. Build em C
@@ -245,17 +228,18 @@ O Mason instala `codelldb`. Compile com símbolos de debug (`:CBuild` já usa `-
 
 Caso seja solicitado o executável, indique o `.exe` gerado.
 
-## 7. Treesitter
+## 7. Edição sem LSP e sem realce de sintaxe
 
-A configuração inclui `nvim-treesitter`, porém os parsers não são instalados automaticamente. Na versão atual, a instalação de parsers exige `tree-sitter-cli` e um compilador C.
+A configuração não carrega plugins de LSP nem inicia servidores de linguagem.
+Os atalhos de diagnóstico, navegação por símbolos e autocomplete do LSP foram
+removidos. O autocomplete usa palavras dos buffers.
 
-Sem Treesitter, C continua com:
+O realce tradicional fica desligado com `syntax off`. O realce via Treesitter
+também é desativado, inclusive quando os ftplugins nativos do Neovim o iniciam
+para arquivos Lua, Markdown ou ajuda. O tema continua definindo as cores da
+interface, como menus, números de linha, seleção e busca.
 
-- syntax highlighting tradicional do Neovim;
-- semantic tokens do `clangd`;
-- LSP completo.
-
-Depois de preparar o toolchain do Treesitter, os parsers podem ser instalados conforme a documentação atual do plugin.
+A formatação de C/C++ usa diretamente o `clang-format` pelo Conform.
 
 ## 8. Recarregar a configuração e atualizar plugins
 
@@ -297,8 +281,7 @@ nvim/
         ├── environment.lua
         ├── options.lua
         ├── plugins.lua
-        ├── lsp.lua
-        ├── treesitter.lua
+        ├── tools.lua
         ├── cdev.lua
         ├── dap.lua
         ├── keymaps.lua

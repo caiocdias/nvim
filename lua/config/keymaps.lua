@@ -27,19 +27,10 @@ map("n", "<leader>fg", function()
   telescope.live_grep()
 end, { desc = "Buscar texto no projeto" })
 
-map("n", "[d", function()
-  vim.diagnostic.jump({ count = -1 })
-end, { desc = "Diagnóstico anterior" })
-map("n", "]d", function()
-  vim.diagnostic.jump({ count = 1 })
-end, { desc = "Próximo diagnóstico" })
-map("n", "<leader>dd", vim.diagnostic.open_float, { desc = "Detalhar diagnóstico" })
-map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Lista de diagnósticos" })
-
 map({ "n", "v" }, "<leader>f", function()
   conform.format({
     async = true,
-    lsp_format = "fallback",
+    lsp_format = "never",
   })
 end, { desc = "Formatar" })
 
@@ -82,10 +73,6 @@ map("i", "<CR>", function()
   end
   return "<CR>"
 end, { expr = true, desc = "Aceitar sugestão" })
-
-map("i", "<C-Space>", function()
-  vim.lsp.completion.get()
-end, { desc = "Forçar autocomplete LSP" })
 
 map("n", "<leader>tt", function()
   vim.cmd("botright 12new")
