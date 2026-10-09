@@ -69,6 +69,10 @@ end, { expr = true, desc = "Sugestão anterior" })
 
 map("i", "<CR>", function()
   if vim.fn.pumvisible() == 1 then
+    -- Sem sugestão selecionada, fecha o menu e quebra a linha normalmente.
+    if vim.fn.complete_info({ "selected" }).selected == -1 then
+      return "<C-e><CR>"
+    end
     return "<C-y>"
   end
   return "<CR>"

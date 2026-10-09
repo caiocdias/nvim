@@ -22,7 +22,7 @@ opt.confirm = true
 opt.swapfile = false
 opt.inccommand = "split"
 opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
-opt.autocomplete = true
+opt.shortmess:append("c")
 opt.complete = { ".", "w", "b", "u" }
 
 opt.tabstop = 4

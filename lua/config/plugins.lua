@@ -2,30 +2,47 @@ if vim.fn.executable("git") == 0 then
   error("Git não foi encontrado no PATH. Instale o Git antes de iniciar esta configuração.")
 end
 
-local gh = function(repo)
-  return "https://github.com/" .. repo
+-- lazy.nvim: gerenciador de plugins compatível com o Neovim 0.11 do Ubuntu.
+local lazypath = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
+if not vim.uv.fs_stat(lazypath) then
+  local out = vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--branch=stable",
+    "https://github.com/folke/lazy.nvim.git",
+    lazypath,
+  })
+  if vim.v.shell_error ~= 0 then
+    error("Falha ao baixar o lazy.nvim:\n" .. out)
+  end
 end
+vim.opt.rtp:prepend(lazypath)
 
-vim.pack.add({
-  { src = gh("folke/tokyonight.nvim") },
-  { src = gh("nvim-lua/plenary.nvim") },
-  { src = gh("nvim-tree/nvim-web-devicons") },
-  { src = gh("MunifTanjim/nui.nvim") },
-  { src = gh("nvim-neo-tree/neo-tree.nvim"), version = "v3.x" },
-  { src = gh("nvim-telescope/telescope.nvim") },
-  { src = gh("mason-org/mason.nvim") },
-  { src = gh("WhoIsSethDaniel/mason-tool-installer.nvim") },
-  { src = gh("stevearc/conform.nvim") },
-  { src = gh("lewis6991/gitsigns.nvim") },
-  { src = gh("nvim-lualine/lualine.nvim") },
-  { src = gh("folke/which-key.nvim") },
-  { src = gh("windwp/nvim-autopairs") },
-  { src = gh("mfussenegger/nvim-dap") },
-  { src = gh("nvim-neotest/nvim-nio") },
-  { src = gh("rcarriga/nvim-dap-ui") },
+require("lazy").setup({
+  { "folke/tokyonight.nvim" },
+  { "nvim-lua/plenary.nvim" },
+  { "nvim-tree/nvim-web-devicons" },
+  { "MunifTanjim/nui.nvim" },
+  { "nvim-neo-tree/neo-tree.nvim", branch = "v3.x" },
+  { "nvim-telescope/telescope.nvim" },
+  { "mason-org/mason.nvim" },
+  { "WhoIsSethDaniel/mason-tool-installer.nvim" },
+  { "stevearc/conform.nvim" },
+  { "lewis6991/gitsigns.nvim" },
+  { "nvim-lualine/lualine.nvim" },
+  { "folke/which-key.nvim" },
+  { "windwp/nvim-autopairs" },
+  { "mfussenegger/nvim-dap" },
+  { "nvim-neotest/nvim-nio" },
+  { "rcarriga/nvim-dap-ui" },
 }, {
-  confirm = false,
-  load = true,
+  -- Os plugins são configurados logo abaixo, então todos carregam na inicialização.
+  defaults = { lazy = false },
+  install = { colorscheme = { "tokyonight" } },
+  checker = { enabled = false },
+  change_detection = { notify = false },
+  rocks = { enabled = false },
 })
 
 require("tokyonight").setup({

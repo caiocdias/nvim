@@ -1,6 +1,7 @@
 # Neovim para C no Linux
 
-Configuração voltada ao **Neovim 0.12+** no Linux (testada no Ubuntu).
+Configuração voltada ao **Neovim 0.11+** no Linux, testada com o Neovim 0.11.6
+instalado pelo `apt` no Ubuntu 26.04.
 
 ## O que está incluído
 
@@ -30,31 +31,14 @@ O resultado deve ser:
 
 ## 2. Pré-requisitos
 
-### Obrigatório: Neovim 0.12 ou superior
-
-O pacote `neovim` do apt no Ubuntu 26.04 ainda é a versão 0.11, que não tem
-`vim.pack`. Instale o binário oficial:
-
-```bash
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-sudo rm -rf /opt/nvim-linux-x86_64
-sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> ~/.bashrc
-```
-
-Abra um terminal novo e confira:
-
-```bash
-nvim --version
-```
-
 ### Pacotes do sistema
 
 ```bash
-sudo apt install git ripgrep fd-find build-essential clang clang-format unzip wl-clipboard
+sudo apt install neovim git ripgrep fd-find build-essential clang clang-format unzip wl-clipboard
 ```
 
-- `git`: obrigatório; o gerenciador nativo `vim.pack` usa Git para baixar os plugins.
+- `neovim`: o editor (versão 0.11 ou superior).
+- `git`: obrigatório; o [lazy.nvim](https://github.com/folke/lazy.nvim) usa Git para baixar os plugins.
 - `ripgrep`: necessário para `<leader>fg` (busca de texto no projeto).
 - `fd-find`: opcional; acelera `<leader>ff` (busca de arquivos).
 - `build-essential` / `clang`: compiladores C usados por `:CBuild`.
@@ -66,6 +50,7 @@ sudo apt install git ripgrep fd-find build-essential clang clang-format unzip wl
 Confirme:
 
 ```bash
+nvim --version
 clang --version
 clang-format --version
 ```
@@ -78,7 +63,8 @@ Abra:
 nvim
 ```
 
-Na primeira execução, `vim.pack` baixa os plugins. Em seguida, Mason instala automaticamente:
+Na primeira execução, o lazy.nvim se instala e baixa os plugins nas revisões
+registradas em `lazy-lock.json`. Em seguida, Mason instala automaticamente:
 
 - `clang-format`, somente se não houver um executável disponível no `PATH`
 - `codelldb`
@@ -173,8 +159,9 @@ Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
 | `:write` ou `:w` | Comando | Linha de comando, a partir do Normal | Salvar arquivo atual (`Space w`) |
 | `:wall` | Comando | Linha de comando, a partir do Normal | Salvar todos os buffers alterados |
 | `:quit` ou `:q` | Comando | Linha de comando, a partir do Normal | Fechar janela atual (`Space q`); pode pedir para salvar |
-| `:restart` | Comando | Linha de comando, a partir do Normal | Reiniciar o Neovim e recarregar a configuração; salve antes com `:wall` |
-| `:lua vim.pack.update()` | Comando | Linha de comando, a partir do Normal | Buscar atualizações dos plugins e abrir a revisão |
+| `:qa` | Comando | Linha de comando, a partir do Normal | Sair do Neovim (para recarregar a configuração, saia e abra de novo); salve antes com `:wall` |
+| `:Lazy` | Comando | Linha de comando, a partir do Normal | Abrir o gerenciador de plugins |
+| `:Lazy update` | Comando | Linha de comando, a partir do Normal | Atualizar os plugins e o `lazy-lock.json` |
 | `:Neotree toggle reveal` | Comando | Linha de comando, a partir do Normal | Abrir/fechar explorador e revelar arquivo atual (`Space e`) |
 | `:Telescope find_files` | Comando | Linha de comando, a partir do Normal | Procurar arquivo (`Space ff`) |
 | `:Telescope live_grep` | Comando | Linha de comando, a partir do Normal | Procurar texto no projeto (`Space fg`); requer `ripgrep` |
@@ -227,7 +214,8 @@ Caso seja solicitado o executável, indique o binário gerado (o nome do `.c` se
 
 A configuração não carrega plugins de LSP nem inicia servidores de linguagem.
 Os atalhos de diagnóstico, navegação por símbolos e autocomplete do LSP foram
-removidos. O autocomplete usa palavras dos buffers.
+removidos. O autocomplete usa palavras dos buffers: o menu abre sozinho depois de
+2 caracteres de uma palavra (`<C-n>` nativo, sem plugin).
 
 O realce tradicional fica desligado com `syntax off`. O realce via Treesitter
 também é desativado, inclusive quando os ftplugins nativos do Neovim o iniciam
@@ -238,25 +226,27 @@ A formatação de C/C++ usa diretamente o `clang-format` pelo Conform.
 
 ## 8. Recarregar a configuração e atualizar plugins
 
-Para carregar as alterações da configuração, execute um comando por vez:
+Para carregar as alterações da configuração, salve tudo e saia, executando um
+comando por vez:
 
 ```vim
 :wall
-:restart
+:qa
 ```
 
-O primeiro salva os arquivos; o segundo reinicia o Neovim e carrega a configuração
-novamente. Apenas `:source $MYVIMRC` não recarrega todos os módulos Lua já
-carregados por `require()`.
+Depois, abra o `nvim` de novo. Apenas `:source $MYVIMRC` não recarrega todos os
+módulos Lua já carregados por `require()`.
 
-O Neovim 0.12 possui `vim.pack` nativo. Para atualizar:
+Os plugins são gerenciados pelo lazy.nvim. Para atualizar:
 
 ```vim
-:lua vim.pack.update()
+:Lazy update
 ```
 
-Revise a tela de mudanças e grave com `:write` para confirmar. Depois, execute
-`:restart` para carregar os plugins atualizados.
+A janela mostra o que mudou e grava as novas revisões em `lazy-lock.json`.
+Saia e abra o Neovim de novo para carregar os plugins atualizados. Para voltar
+às revisões do lockfile (por exemplo, depois de um `git checkout`), use
+`:Lazy restore`.
 
 ## 9. Estilo de formatação
 
@@ -270,7 +260,7 @@ nvim/
 ├── .clang-format
 ├── .gitattributes
 ├── .gitignore
-├── nvim-pack-lock.json
+├── lazy-lock.json
 └── lua/
     └── config/
         ├── options.lua
@@ -282,7 +272,7 @@ nvim/
         └── autocmds.lua
 ```
 
-O `nvim-pack-lock.json` é versionado para registrar as revisões dos plugins.
+O `lazy-lock.json` é versionado para registrar as revisões dos plugins.
 Após atualizar plugins, revise e faça commit das mudanças nesse arquivo.
-Plugins baixados e ferramentas do Mason ficam em `~/.local/share/nvim`,
-fora deste repositório. Arquivos temporários, logs e binários de compilação são ignorados.
+Plugins baixados (`~/.local/share/nvim/lazy`) e ferramentas do Mason
+(`~/.local/share/nvim/mason`) ficam fora deste repositório. Arquivos temporários, logs e binários de compilação são ignorados.
