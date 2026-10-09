@@ -1,6 +1,6 @@
-# Neovim para C no Windows
+# Neovim para C no Linux
 
-Configuração voltada ao **Neovim 0.12+** no Windows.
+Configuração voltada ao **Neovim 0.12+** no Linux (testada no Ubuntu).
 
 ## O que está incluído
 
@@ -19,70 +19,68 @@ Configuração voltada ao **Neovim 0.12+** no Windows.
 Coloque ou clone este repositório em:
 
 ```text
-%LOCALAPPDATA%\nvim
+~/.config/nvim
 ```
 
 O resultado deve ser:
 
 ```text
-C:\Users\SEU_USUARIO\AppData\Local\nvim\init.lua
+~/.config/nvim/init.lua
 ```
 
 ## 2. Pré-requisitos
 
-### Obrigatório: Git
+### Obrigatório: Neovim 0.12 ou superior
 
-O gerenciador nativo `vim.pack` usa Git para baixar os plugins.
+O pacote `neovim` do apt no Ubuntu 26.04 ainda é a versão 0.11, que não tem
+`vim.pack`. Instale o binário oficial:
 
-No PowerShell:
-
-```powershell
-winget install --id Git.Git -e
+```bash
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+sudo rm -rf /opt/nvim-linux-x86_64
+sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> ~/.bashrc
 ```
 
-Feche e abra o terminal depois da instalação.
+Abra um terminal novo e confira:
 
-### Recomendado: ripgrep
-
-Necessário para `<leader>fg` (busca de texto no projeto):
-
-```powershell
-winget install --id BurntSushi.ripgrep.MSVC -e
+```bash
+nvim --version
 ```
 
-### Obrigatório para compilar C: LLVM/Clang ou GCC
+### Pacotes do sistema
 
-Para gerar `.exe`, é necessário um compilador C, como Clang ou GCC.
-
-LLVM/Clang no Windows:
-
-```powershell
-winget install --id LLVM.LLVM -e
+```bash
+sudo apt install git ripgrep fd-find build-essential clang clang-format unzip wl-clipboard
 ```
 
-Depois, abra um terminal novo e confirme:
+- `git`: obrigatório; o gerenciador nativo `vim.pack` usa Git para baixar os plugins.
+- `ripgrep`: necessário para `<leader>fg` (busca de texto no projeto).
+- `fd-find`: opcional; acelera `<leader>ff` (busca de arquivos).
+- `build-essential` / `clang`: compiladores C usados por `:CBuild`.
+- `clang-format`: formatador usado pelo Conform.
+- `unzip`: usado pelo Mason para extrair o `codelldb`.
+- `wl-clipboard`: integra `y`/`p` com a área de transferência do sistema no
+  Wayland. Em sessões X11, use `xclip` no lugar.
 
-```powershell
+Confirme:
+
+```bash
 clang --version
 clang-format --version
 ```
-
-O Neovim também procura o LLVM em `%ProgramW6432%\LLVM\bin` (ou
-`%ProgramFiles%\LLVM\bin`) e acrescenta essa pasta ao seu próprio `PATH`,
-sem alterar o `PATH` do Windows. Para instalações em outros locais, adicione
-a pasta `bin` correspondente ao `PATH` antes de abrir o editor.
 
 ## 3. Primeiro início
 
 Abra:
 
-```powershell
+```bash
 nvim
 ```
 
 Na primeira execução, `vim.pack` baixa os plugins. Em seguida, Mason instala automaticamente:
 
-- `clang-format`, somente se não houver um executável disponível no `PATH` do Neovim
+- `clang-format`, somente se não houver um executável disponível no `PATH`
 - `codelldb`
 
 Use os comandos abaixo para conferir:
@@ -95,11 +93,9 @@ Use os comandos abaixo para conferir:
 ### Erro `clang-format: failed to install`
 
 O [pacote do Mason](https://github.com/mason-org/mason-registry/blob/main/packages/clang-format/package.yaml)
-é instalado via PyPI e depende de Python. Se `:MasonLog` mostrar
-`Unable to find python3 installation in PATH`, falta um Python acessível ao editor.
-
-Com o LLVM instalado, esta configuração usa o `clang-format` que já vem com ele
-e dispensa a instalação desse pacote pelo Mason. Reinicie o Neovim e confira:
+é instalado via PyPI e depende de Python com `venv`. Com o `clang-format` do apt
+instalado, a configuração usa o executável do sistema e dispensa esse pacote.
+Reinicie o Neovim e confira:
 
 ```vim
 :echo exepath('clang-format')
@@ -107,9 +103,8 @@ e dispensa a instalação desse pacote pelo Mason. Reinicie o Neovim e confira:
 ```
 
 O formatter deve aparecer disponível no Conform; ele não precisa constar como
-instalado no Mason. Para usar a instalação via Mason em uma máquina sem LLVM,
-instale Python 3 com `pip` e suporte a `venv`, coloque-o no `PATH`, reabra o editor
-e execute `:MasonInstall clang-format`.
+instalado no Mason. Para usar a instalação via Mason, instale
+`sudo apt install python3-venv`, reabra o editor e execute `:MasonInstall clang-format`.
 
 ## 4. Atalhos principais
 
@@ -149,7 +144,7 @@ A coluna **Tipo** distingue atalhos de comandos digitados com `:`.
 | `Space fh` | Atalho | Normal | Procurar na ajuda |
 | `Space f` | Atalho | Normal ou Visual | Formatar arquivo ou seleção, respectivamente |
 | `Space cb` | Atalho | Normal | Compilar arquivo C atual (equivale a `:CBuild`) |
-| `Space cr` | Atalho | Normal | Executar último `.exe` compilado (equivale a `:CRun`) |
+| `Space cr` | Atalho | Normal | Executar último binário compilado (equivale a `:CRun`) |
 | `Space cx` | Atalho | Normal | Compilar e executar (equivale a `:CBuildRun`) |
 | `F5` | Atalho | Normal | Iniciar/continuar debugger |
 | `F10` | Atalho | Normal | Executar próxima linha sem entrar na função (step over) |
@@ -185,7 +180,7 @@ Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
 | `:Telescope live_grep` | Comando | Linha de comando, a partir do Normal | Procurar texto no projeto (`Space fg`); requer `ripgrep` |
 | `:Telescope buffers` | Comando | Linha de comando, a partir do Normal | Procurar buffer aberto (`Space fb`) |
 | `:CBuild` | Comando | Linha de comando, a partir do Normal | Compilar arquivo C atual (`Space cb`) |
-| `:CRun` | Comando | Linha de comando, a partir do Normal | Executar último `.exe` compilado (`Space cr`) |
+| `:CRun` | Comando | Linha de comando, a partir do Normal | Executar último binário compilado (`Space cr`) |
 | `:CBuildRun` | Comando | Linha de comando, a partir do Normal | Compilar e executar (`Space cx`) |
 | `:Mason` | Comando | Linha de comando, a partir do Normal | Abrir gerenciador de ferramentas |
 | `:MasonLog` | Comando | Linha de comando, a partir do Normal | Consultar log de instalação das ferramentas |
@@ -209,7 +204,7 @@ Flags padrão:
 Exemplo:
 
 ```text
-main.c -> main.exe
+main.c -> main
 ```
 
 Comandos equivalentes aos atalhos:
@@ -226,7 +221,7 @@ Para projetos com vários `.c`, CMake, Makefile etc., configure o sistema de bui
 
 O Mason instala `codelldb`. Compile com símbolos de debug (`:CBuild` já usa `-g`) e pressione `F5`.
 
-Caso seja solicitado o executável, indique o `.exe` gerado.
+Caso seja solicitado o executável, indique o binário gerado (o nome do `.c` sem a extensão).
 
 ## 7. Edição sem LSP e sem realce de sintaxe
 
@@ -278,7 +273,6 @@ nvim/
 ├── nvim-pack-lock.json
 └── lua/
     └── config/
-        ├── environment.lua
         ├── options.lua
         ├── plugins.lua
         ├── tools.lua
@@ -290,5 +284,5 @@ nvim/
 
 O `nvim-pack-lock.json` é versionado para registrar as revisões dos plugins.
 Após atualizar plugins, revise e faça commit das mudanças nesse arquivo.
-Plugins baixados e ferramentas do Mason ficam em `%LOCALAPPDATA%\nvim-data`,
+Plugins baixados e ferramentas do Mason ficam em `~/.local/share/nvim`,
 fora deste repositório. Arquivos temporários, logs e binários de compilação são ignorados.

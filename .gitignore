@@ -9,15 +9,11 @@
 /Session.vim.vim
 
 # Artefatos de compilação
-*.exe
-*.obj
 *.o
-*.pdb
+*.out
 /build/
 
 # Arquivos locais e credenciais
 .env
 .env.*
 !.env.example
-.DS_Store
-Thumbs.db

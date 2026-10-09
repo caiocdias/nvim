@@ -26,7 +26,7 @@ local function compiler()
 end
 
 local function executable_for(file)
-  return vim.fn.fnamemodify(file, ":r") .. ".exe"
+  return vim.fn.fnamemodify(file, ":r")
 end
 
 local function open_build_errors(text)
@@ -51,7 +51,7 @@ function M.build(run_after)
   local cc = compiler()
   if not cc then
     vim.notify(
-      "Nenhum compilador encontrado. Instale LLVM/Clang ou GCC e reabra o terminal.",
+      "Nenhum compilador encontrado. Instale com: sudo apt install build-essential",
       vim.log.levels.ERROR
     )
     return
@@ -96,7 +96,7 @@ end
 function M.run(executable)
   local exe = executable or vim.g.last_c_executable
 
-  if not exe or vim.fn.filereadable(exe) == 0 then
+  if not exe or vim.fn.executable(exe) == 0 then
     local file = current_c_file()
     if not file then
       return
@@ -104,7 +104,7 @@ function M.run(executable)
     exe = executable_for(file)
   end
 
-  if vim.fn.filereadable(exe) == 0 then
+  if vim.fn.executable(exe) == 0 then
     vim.notify("Executável não encontrado. Rode :CBuild primeiro.", vim.log.levels.ERROR)
     return
   end

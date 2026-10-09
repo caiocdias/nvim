@@ -15,7 +15,7 @@ dap.configurations.c = {
     type = "codelldb",
     request = "launch",
     program = function()
-      local default = vim.g.last_c_executable or (vim.fs.normalize(vim.fn.getcwd()) .. "\\")
+      local default = vim.g.last_c_executable or (vim.fn.getcwd() .. "/")
       return vim.fn.input("Executável: ", default, "file")
     end,
     cwd = "${workspaceFolder}",

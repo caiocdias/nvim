@@ -5,7 +5,6 @@ end
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
-require("config.environment")
 require("config.options")
 require("config.plugins")
 require("config.tools")
