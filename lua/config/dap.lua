@@ -11,7 +11,7 @@ dap.adapters.codelldb = {
 
 dap.configurations.c = {
   {
-    name = "Executar arquivo C",
+    name = "Executar binário C/C++",
     type = "codelldb",
     request = "launch",
     program = function()

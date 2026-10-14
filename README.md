@@ -1,4 +1,4 @@
-# Neovim para C no Linux
+# Neovim para C e C++ no Linux
 
 Configuração voltada ao **Neovim 0.11+** no Linux, testada com o Neovim 0.11.6
 instalado pelo `apt` no Ubuntu 26.04.
@@ -12,7 +12,7 @@ instalado pelo `apt` no Ubuntu 26.04.
 - `clang-format` com formatação ao salvar e estilo LLVM ajustado para 4 espaços.
 - Git signs.
 - Debug com `nvim-dap` + `codelldb`.
-- Build e execução de arquivo C diretamente no Neovim.
+- Build e execução de arquivo C ou C++ diretamente no Neovim.
 - Tema Tokyo Night, statusline, autopairs e WhichKey.
 
 ## 1. Onde colocar a pasta
@@ -41,7 +41,8 @@ sudo apt install neovim git ripgrep fd-find build-essential clang clang-format u
 - `git`: obrigatório; o [lazy.nvim](https://github.com/folke/lazy.nvim) usa Git para baixar os plugins.
 - `ripgrep`: necessário para `<leader>fg` (busca de texto no projeto).
 - `fd-find`: opcional; acelera `<leader>ff` (busca de arquivos).
-- `build-essential` / `clang`: compiladores C usados por `:CBuild`.
+- `build-essential` / `clang`: compiladores C (`gcc`, `clang`) e C++ (`g++`,
+  `clang++`) usados por `:CBuild`.
 - `clang-format`: formatador usado pelo Conform.
 - `unzip`: usado pelo Mason para extrair o `codelldb`.
 - `wl-clipboard`: integra `y`/`p` com a área de transferência do sistema no
@@ -52,6 +53,7 @@ Confirme:
 ```bash
 nvim --version
 clang --version
+clang++ --version
 clang-format --version
 ```
 
@@ -129,7 +131,7 @@ A coluna **Tipo** distingue atalhos de comandos digitados com `:`.
 | `Space fr` | Atalho | Normal | Procurar arquivo recente |
 | `Space fh` | Atalho | Normal | Procurar na ajuda |
 | `Space f` | Atalho | Normal ou Visual | Formatar arquivo ou seleção, respectivamente |
-| `Space cb` | Atalho | Normal | Compilar arquivo C atual (equivale a `:CBuild`) |
+| `Space cb` | Atalho | Normal | Compilar arquivo C/C++ atual (equivale a `:CBuild`) |
 | `Space cr` | Atalho | Normal | Executar último binário compilado (equivale a `:CRun`) |
 | `Space cx` | Atalho | Normal | Compilar e executar (equivale a `:CBuildRun`) |
 | `F5` | Atalho | Normal | Iniciar/continuar debugger |
@@ -166,7 +168,7 @@ Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
 | `:Telescope find_files` | Comando | Linha de comando, a partir do Normal | Procurar arquivo (`Space ff`) |
 | `:Telescope live_grep` | Comando | Linha de comando, a partir do Normal | Procurar texto no projeto (`Space fg`); requer `ripgrep` |
 | `:Telescope buffers` | Comando | Linha de comando, a partir do Normal | Procurar buffer aberto (`Space fb`) |
-| `:CBuild` | Comando | Linha de comando, a partir do Normal | Compilar arquivo C atual (`Space cb`) |
+| `:CBuild` | Comando | Linha de comando, a partir do Normal | Compilar arquivo C/C++ atual (`Space cb`) |
 | `:CRun` | Comando | Linha de comando, a partir do Normal | Executar último binário compilado (`Space cr`) |
 | `:CBuildRun` | Comando | Linha de comando, a partir do Normal | Compilar e executar (`Space cx`) |
 | `:Mason` | Comando | Linha de comando, a partir do Normal | Abrir gerenciador de ferramentas |
@@ -175,24 +177,26 @@ Para todas as linhas abaixo: entre no modo Normal, digite a entrada completa
 | `:echo exepath('clang-format')` | Comando | Linha de comando, a partir do Normal | Mostrar o caminho do `clang-format` encontrado |
 | `:checkhealth` | Comando | Linha de comando, a partir do Normal | Verificar a instalação e os plugins |
 
-## 5. Build em C
+## 5. Build em C e C++
 
-O comando `:CBuild` compila somente o arquivo `.c` atual. Ele usa, nesta ordem:
+O comando `:CBuild` compila somente o arquivo atual. A linguagem é escolhida
+pela extensão:
 
-1. `clang`
-2. `gcc`
+| Linguagem | Extensões | Compiladores (nesta ordem) | Flags padrão |
+|---|---|---|---|
+| C | `.c` | `clang`, `gcc` | `-std=c17 -Wall -Wextra -Wpedantic -g` |
+| C++ | `.cpp`, `.cc`, `.cxx`, `.c++` | `clang++`, `g++` | `-std=c++20 -Wall -Wextra -Wpedantic -g` |
 
-Flags padrão:
-
-```text
--std=c17 -Wall -Wextra -Wpedantic -g
-```
-
-Exemplo:
+O executável fica na mesma pasta, com o nome do arquivo sem a extensão:
 
 ```text
-main.c -> main
+main.c   -> main
+main.cpp -> main
 ```
+
+Erros de compilação abrem na quickfix list (`:copen`); pressione `Enter` sobre
+um erro para ir à linha correspondente. Cabeçalhos (`.h`, `.hpp`) não são
+compilados sozinhos: rode `:CBuild` a partir do arquivo-fonte.
 
 Comandos equivalentes aos atalhos:
 
@@ -202,13 +206,14 @@ Comandos equivalentes aos atalhos:
 :CBuildRun
 ```
 
-Para projetos com vários `.c`, CMake, Makefile etc., configure o sistema de build do projeto; `:CBuild` foi propositalmente mantido simples para exercícios e arquivos únicos.
+Para projetos com vários arquivos-fonte, CMake, Makefile etc., configure o sistema de build do projeto; `:CBuild` foi propositalmente mantido simples para exercícios e arquivos únicos.
 
 ## 6. Debug
 
 O Mason instala `codelldb`. Compile com símbolos de debug (`:CBuild` já usa `-g`) e pressione `F5`.
 
-Caso seja solicitado o executável, indique o binário gerado (o nome do `.c` sem a extensão).
+Funciona para C e C++. Caso seja solicitado o executável, indique o binário
+gerado (o nome do arquivo-fonte sem a extensão).
 
 ## 7. Edição sem LSP e sem realce de sintaxe
 

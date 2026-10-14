@@ -43,7 +43,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp", "h", "hpp" },
+  -- Cabeçalhos (.h, .hpp) recebem o filetype "c" ou "cpp"; não há filetype "h".
+  pattern = { "c", "cpp" },
   callback = function(ev)
     vim.bo[ev.buf].tabstop = 4
     vim.bo[ev.buf].shiftwidth = 4
