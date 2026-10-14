@@ -9,7 +9,7 @@ instalado pelo `apt` no Ubuntu 26.04.
 - Autocomplete nativo com palavras dos buffers, sem servidor de linguagem.
 - Explorador de arquivos com Neo-tree.
 - Busca de arquivos/texto com Telescope.
-- `clang-format` com formatação ao salvar e estilo LLVM ajustado para 4 espaços.
+- `clang-format` sob demanda (`Space f`), com estilo LLVM ajustado para 4 espaços; salvar não altera o arquivo.
 - Git signs.
 - Debug com `nvim-dap` + `codelldb`.
 - Build e execução de arquivo C ou C++ diretamente no Neovim.
@@ -227,7 +227,8 @@ O realce de sintaxe usa os arquivos de sintaxe que vêm com o Neovim
 tradicional; Lua e a ajuda (`:help`) usam o Treesitter que o próprio
 Neovim ativa para eles. As cores vêm do tema Tokyo Night.
 
-A formatação de C/C++ usa diretamente o `clang-format` pelo Conform.
+A formatação de C/C++ usa diretamente o `clang-format` pelo Conform, apenas
+quando acionada com `Space f`; `:w` grava o arquivo sem reformatá-lo.
 
 ## 8. Recarregar a configuração e atualizar plugins
 
