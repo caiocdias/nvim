@@ -5,7 +5,7 @@ instalado pelo `apt` no Ubuntu 26.04.
 
 ## O que está incluído
 
-- Edição sem LSP e sem realce de sintaxe.
+- Edição sem LSP, com realce de sintaxe nativo do Neovim.
 - Autocomplete nativo com palavras dos buffers, sem servidor de linguagem.
 - Explorador de arquivos com Neo-tree.
 - Busca de arquivos/texto com Telescope.
@@ -215,17 +215,17 @@ O Mason instala `codelldb`. Compile com símbolos de debug (`:CBuild` já usa `-
 Funciona para C e C++. Caso seja solicitado o executável, indique o binário
 gerado (o nome do arquivo-fonte sem a extensão).
 
-## 7. Edição sem LSP e sem realce de sintaxe
+## 7. Edição sem LSP, com realce de sintaxe
 
 A configuração não carrega plugins de LSP nem inicia servidores de linguagem.
 Os atalhos de diagnóstico, navegação por símbolos e autocomplete do LSP foram
 removidos. O autocomplete usa palavras dos buffers: o menu abre sozinho depois de
 2 caracteres de uma palavra (`<C-n>` nativo, sem plugin).
 
-O realce tradicional fica desligado com `syntax off`. O realce via Treesitter
-também é desativado, inclusive quando os ftplugins nativos do Neovim o iniciam
-para arquivos Lua, Markdown ou ajuda. O tema continua definindo as cores da
-interface, como menus, números de linha, seleção e busca.
+O realce de sintaxe usa os arquivos de sintaxe que vêm com o Neovim
+(`syntax enable`), sem plugins nem parsers extras. C e C++ usam esse realce
+tradicional; Lua e a ajuda (`:help`) usam o Treesitter que o próprio
+Neovim ativa para eles. As cores vêm do tema Tokyo Night.
 
 A formatação de C/C++ usa diretamente o `clang-format` pelo Conform.
 

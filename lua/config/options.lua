@@ -31,4 +31,4 @@ opt.softtabstop = 4
 opt.expandtab = true
 opt.smartindent = true
 
-vim.cmd("syntax off")
+vim.cmd("syntax enable")

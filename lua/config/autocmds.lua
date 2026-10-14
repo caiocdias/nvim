@@ -1,13 +1,3 @@
--- Os ftplugins nativos também ativam Treesitter (Lua, Markdown e ajuda).
--- Este autocmd roda depois deles e remove o realce de qualquer tipo de arquivo.
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function(ev)
-    vim.treesitter.stop(ev.buf)
-    -- O highlighter nativo pode reativar a sintaxe ao iniciar ou parar.
-    vim.cmd("syntax off")
-  end,
-})
-
 -- O Neovim 0.11 não tem 'autocomplete': abre o menu de palavras dos buffers
 -- ao digitar 2 caracteres de palavra. Buffers especiais (Telescope etc.) ficam de fora.
 local skip_autocomplete = false

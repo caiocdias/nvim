@@ -19,6 +19,13 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- O Neovim do Ubuntu instala os parsers Treesitter em /usr/lib/nvim/parser.
+-- O lazy.nvim redefine o runtimepath, então esses diretórios precisam ser
+-- mantidos para os ftplugins nativos (Lua, Markdown, ajuda) não falharem.
+local parser_dirs = vim.tbl_filter(function(path)
+  return path ~= vim.env.VIMRUNTIME and vim.uv.fs_stat(path .. "/parser") ~= nil
+end, vim.opt.rtp:get())
+
 require("lazy").setup({
   { "folke/tokyonight.nvim" },
   { "nvim-lua/plenary.nvim" },
@@ -43,6 +50,7 @@ require("lazy").setup({
   checker = { enabled = false },
   change_detection = { notify = false },
   rocks = { enabled = false },
+  performance = { rtp = { paths = parser_dirs } },
 })
 
 require("tokyonight").setup({
